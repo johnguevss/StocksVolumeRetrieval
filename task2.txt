@@ -1,0 +1,6 @@
+I would use AWS Lambda to implement Drew's application for several reasons. First, the application is small and can finish running in seconds, a few minutes max. 
+Because of this, it can comfortably run within Lambda's timeout limit of 15 minutes. If it runs greater than 15 minutes, Lambda will be automatically out of the choices. 
+Second, since Lambda is billed for how long your program ran upto the millisecond and the program can finish fast, Drew can save money, 
+ECS can run on top of EC2 billed by spot instance, but it is not guaranteed to run daily on demand, since it only uses spare computing capacity. 
+Third, I want Drew to focus on his stock trading rather than managing and securing his EC2 instance used by ECS, which is possible with Lambda since it is serverless 
+and everything is already managed by AWS. He can use Fargate, another serverless service, with ECS, but it would incur additional costs.
