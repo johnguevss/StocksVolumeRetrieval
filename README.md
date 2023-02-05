@@ -40,7 +40,7 @@ to research a topic and draw conclusions.
 
 Task 3
 
-Answer is written in task3.
+Answer is written in task3.sql.
 
 Your least favorite coworker, Drew, resigned and took a job at a small retail company. Thank
 goodness, you were losing patience with his requests. Not so fast! Alas, he reaches out to
