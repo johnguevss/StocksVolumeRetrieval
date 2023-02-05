@@ -1,6 +1,12 @@
 # quantifulProject
 
+
+
 Task1
+
+task1.ipynb is my answer for task 1. 
+Required packages are stored in requirements.txt.
+TSLA_average_vol_per_year.csv is a sample output.
 
 Your fictional, technically inept coworker, named Drew, is inexplicably obsessed with with
 Tesla stock and asks you complete the following task:
@@ -20,6 +26,8 @@ shows examples on how to request and unpack data from their API.
 
 Task2
 
+Answer is written in task2.txt.
+
 Your coworker, Drew, is ecstatic about your work in Task 1. Now that he’s had a taste of
 automation, he wants more: he wants a CSV to be produced every day that contains
 yesterday’s closing price of 25 stocks. Due to restrictions, you must implement the solution
@@ -31,6 +39,8 @@ NOTE: YOU DO NOT NEED TO IMPLEMENT THIS TASK! We are interested in your ability
 to research a topic and draw conclusions.
 
 Task 3
+
+Answer is written in task3.
 
 Your least favorite coworker, Drew, resigned and took a job at a small retail company. Thank
 goodness, you were losing patience with his requests. Not so fast! Alas, he reaches out to
