@@ -4,7 +4,7 @@
 
 Task1
 
-task1.ipynb is my answer for task 1. 
+task1.py is my answer for task 1. 
 Required packages are stored in requirements.txt.
 TSLA_average_vol_per_year.csv is a sample output.
 
