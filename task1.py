@@ -42,7 +42,7 @@ year_filter = int(datetime.date.today().year) - YEAR_THRESHOLD
 
 # filter, aggregate and fix schema
 vol_by_year_df = clean_weekly_df.query(f'YEAR >= {year_filter}') \
-    .groupby('YEAR').mean() \
+    .groupby('YEAR').mean(numeric_only=True) \
     .rename(columns={"volume": "AVERAGE_VOLUME"}) \
     .assign(STOCK=STOCK) \
     .reset_index()
