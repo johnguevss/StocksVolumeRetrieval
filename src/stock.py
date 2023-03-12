@@ -3,9 +3,6 @@ import pandas as pd
 import datetime
 import os
 
-# set the average volume per year for the past (YEAR_THRESHOLD + 1) years including current year
-YEAR_THRESHOLD = 4
-
 
 class Stock:
     STOCK_ENDPOINT = "https://www.alphavantage.co/query"
@@ -50,10 +47,10 @@ class Stock:
         return clean_weekly_df
 
     # TODO 3: Get the average volume per year for the past 5 years for the selected stock
-    def compute_avg_volume(self, df):
-        """Compute the average volume per year for the past (YEAR_THRESHOLD + 1) years including current year"""
+    def compute_avg_volume(self, df, year_count=5):
+        """Compute the average volume per year for the past (year_count) years including current year"""
         # compute past 5 years
-        year_filter = int(datetime.date.today().year) - YEAR_THRESHOLD
+        year_filter = int(datetime.date.today().year) - (year_count - 1)
 
         # filter, aggregate and fix schema
         vol_by_year_df = df.query(f'YEAR >= {year_filter}') \

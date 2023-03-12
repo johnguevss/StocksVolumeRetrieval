@@ -6,5 +6,5 @@ if __name__ == '__main__':
 
     if weekly_tsla:
         clean_data = tsla.clean_stock_data(weekly_tsla)
-        vol_by_year = tsla.compute_avg_volume(clean_data)
+        vol_by_year = tsla.compute_avg_volume(clean_data, 5)
         tsla.save_data_to_csv(vol_by_year)
