@@ -1,16 +1,34 @@
+import requests
 import pytest
 from src.stock import Stock
+from unittest.mock import Mock
 
 
 class TestGetWeeklyStockData(object):
     def test_given_code_is_not_a_stock(self):
-        pass
+        stock = Stock("AWWW")
+        actual = stock.get_weekly_stock_data()
+        expected = None
+        message = f"get_weekly_stock_data returned {actual} instead of {expected}"
+        assert actual is expected, message
 
-    def test_on_api_failed_connection(self):
-        pass
+    def test_on_api_failed_connection(self, mocker):
+        # Replace the requests.get function with a mock function that raises a requests.exceptions.RequestException
+        mocker.patch("requests.get", side_effect=requests.exceptions.RequestException)
+
+        # Create a new Stock object and call the get_weekly_stock_data method
+        stock = Stock("TSLA")
+        result = stock.get_weekly_stock_data()
+
+        # Check that the result is None
+        assert result is None
 
     def test_on_a_us_stock(self):
-        pass
+        stock = Stock("CEB")
+        actual = stock.get_weekly_stock_data()
+        expected = 'Weekly Time Series'
+        message = f"get_weekly_stock_data returned {actual}, did not contain {expected}"
+        assert expected in actual, message
 
 
 class TestCleanStockData(object):

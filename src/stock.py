@@ -24,7 +24,11 @@ class Stock:
 
             response = requests.get(Stock.STOCK_ENDPOINT, params=alpha_param)
             response_data = response.json()
-            return response_data
+            if "Error Message" in response_data:
+                print(f"Error message from API: {response_data['Error Message']}")
+                return None
+            else:
+                return response_data
         except requests.exceptions.RequestException as e:
             print(f"error retrieving stock data: {e}")
             return None
