@@ -37,18 +37,27 @@ class Stock:
     @staticmethod
     def clean_stock_data(response_data):
         """Clean and preprocess stock data."""
+        # convert response_data to dataframe
         weekly_df = pd.DataFrame.from_dict(response_data['Weekly Time Series'],
                                            orient='index',
                                            columns=['5. volume']
                                            )
         clean_weekly_df = weekly_df.reset_index(names='date') \
             .rename(columns={'5. volume': 'volume'})
-        # add year column
-        clean_weekly_df['YEAR'] = clean_weekly_df['date'].str[0:4] \
-            .astype(int)
+
         # set datatype
-        clean_weekly_df['volume'] = clean_weekly_df['volume'].astype(float)
-        return clean_weekly_df
+        clean_weekly_df['volume'] = clean_weekly_df['volume'].astype("float64")
+
+        try:
+            # add year column
+            clean_weekly_df['YEAR'] = clean_weekly_df['date'].str[0:4] \
+                                                            .astype("int64")
+        except ValueError as e:
+            print(f"error retrieving stock data: {e}")
+            return None
+
+        else:
+            return clean_weekly_df
 
     # TODO 3: Get the average volume per year for the past 5 years for the selected stock
     def compute_avg_volume(self, df, year_count=5):
