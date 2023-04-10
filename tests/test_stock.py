@@ -4,6 +4,7 @@ import pytest
 from src.stock import Stock
 from unittest.mock import Mock
 from pandas.testing import assert_frame_equal
+import os
 
 
 class TestGetWeeklyStockData(object):
@@ -115,7 +116,7 @@ class TestCleanStockData(object):
 
 
 class TestComputeAvgVolume(object):
-    mock_df = pd.DataFrame({
+    df_test_compute_avg_vol = pd.DataFrame({
         'date': ["2023-07-09", "2021-07-16", "2020-07-16", "2022-04-09", "2019-12-01", "2018-02-16"],
         'volume': pd.Series([100.0, 200, 300, 350.43, 120, 220.6],
                             index=[0, 1, 2, 3, 4, 5],
@@ -125,27 +126,28 @@ class TestComputeAvgVolume(object):
 
     def test_year_count_greater_than_or_equal_to_max_available_data(self):
         """assert that function will return correct average computation"""
-        # mock df for a newly offered stock on 2020
-        mock_df = TestComputeAvgVolume.mock_df
-        stock = Stock("TSLA")
-        actual = stock.compute_avg_volume(mock_df, 7)
 
-        # expected to get all dates from mock_df
+        df_max_test = TestComputeAvgVolume.df_test_compute_avg_vol.copy()
+        df_max_test.loc[len(df_max_test)] = ["2023-01-05", 150.00, 2023]
+        stock = Stock("TSLA")
+        actual = stock.compute_avg_volume(df_max_test, 7)
+
+        # expected to get correct computed volume for 2023 from df_max_test
         expected = pd.DataFrame({
                                     'STOCK': ["TSLA", "TSLA", "TSLA", "TSLA", "TSLA", "TSLA"],
                                     'YEAR': pd.Series([2018, 2019, 2020, 2021, 2022, 2023], index=[0, 1, 2, 3, 4, 5], dtype="int64"),
-                                    'AVERAGE_VOLUME': pd.Series([220.6, 120, 300, 200, 350.43, 100.0], index=[0, 1, 2, 3, 4, 5], dtype="float64")
+                                    'AVERAGE_VOLUME': pd.Series([220.6, 120, 300, 200, 350.43, 125.0], index=[0, 1, 2, 3, 4, 5], dtype="float64")
                                }, index=[0, 1, 2, 3, 4, 5])
 
         assert_frame_equal(expected, actual)
 
     def test_min_year_count(self):
         """assert that function will return correct values at smallest year_filter value possible"""
-        mock_df = TestComputeAvgVolume.mock_df
+        test_df = TestComputeAvgVolume.df_test_compute_avg_vol
         stock = Stock("TSLA")
-        actual = stock.compute_avg_volume(mock_df, 1)
+        actual = stock.compute_avg_volume(test_df, 1)
 
-        # expected to get all dates from mock_df
+        # expected to get 1 date from test_df
         expected = pd.DataFrame({
                                     'STOCK': ["TSLA"],
                                     'YEAR': pd.Series([2023], index=[0], dtype="int64"),
@@ -156,53 +158,93 @@ class TestComputeAvgVolume(object):
 
     def test_year_count_less_than_min(self):
         """assert that function will return None at year_filter less than minimum"""
-        mock_df = TestComputeAvgVolume.mock_df
+        test_df = TestComputeAvgVolume.df_test_compute_avg_vol
         stock = Stock("TSLA")
-        actual = stock.compute_avg_volume(mock_df, 0)
+        actual = stock.compute_avg_volume(test_df, 0)
 
         assert actual is None
 
     def test_default_year_count(self):
         """assert that function will return 5 years of data if no year_filter parameter is given"""
-        mock_df = TestComputeAvgVolume.mock_df
+        test_df = TestComputeAvgVolume.df_test_compute_avg_vol
         stock = Stock("TSLA")
-        actual = stock.compute_avg_volume(mock_df)
+        actual = stock.compute_avg_volume(test_df)
 
         expected = pd.DataFrame({
-                                    'STOCK': ["TSLA"],
-                                    'YEAR': pd.Series([2023], index=[0], dtype="int64"),
-                                    'AVERAGE_VOLUME': pd.Series([100.0], index=[0], dtype="float64")
-                               }, index=[0])
+                                    'STOCK': ["TSLA", "TSLA", "TSLA", "TSLA", "TSLA"],
+                                    'YEAR': pd.Series([2019, 2020, 2021, 2022, 2023], index=[0, 1, 2, 3, 4], dtype="int64"),
+                                    'AVERAGE_VOLUME': pd.Series([120, 300, 200, 350.43, 100.0], index=[0, 1, 2, 3, 4], dtype="float64")
+                               }, index=[0, 1, 2, 3, 4])
 
         assert_frame_equal(expected, actual)
 
     def test_given_a_valid_year_count(self):
         """test happy path"""
-        pass
+
+        test_df = TestComputeAvgVolume.df_test_compute_avg_vol
+        stock = Stock("TSLA")
+        actual = stock.compute_avg_volume(test_df, 7)
+
+        # expected to get all dates from test_df
+        expected = pd.DataFrame({
+                                    'STOCK': ["TSLA", "TSLA", "TSLA", "TSLA", "TSLA", "TSLA"],
+                                    'YEAR': pd.Series([2018, 2019, 2020, 2021, 2022, 2023], index=[0, 1, 2, 3, 4, 5], dtype="int64"),
+                                    'AVERAGE_VOLUME': pd.Series([220.6, 120, 300, 200, 350.43, 100.0], index=[0, 1, 2, 3, 4, 5], dtype="float64")
+                               }, index=[0, 1, 2, 3, 4, 5])
+
+        assert_frame_equal(expected, actual)
 
     def test_year_count_not_a_number(self):
         """assert that function will return None if given year count is not a number"""
-        pass
+        test_df = TestComputeAvgVolume.df_test_compute_avg_vol
+        stock = Stock("TSLA")
+        actual = stock.compute_avg_volume(test_df, 'foo')
+
+        assert actual is None
 
 
 class TestSaveDataToCsv(object):
-    def test_file_data_is_a_df(self):
+    test_save_data_df = pd.DataFrame({
+        'STOCK': ["TEST", "TEST", "TEST", "TEST", "TEST", "TEST"],
+        'YEAR': pd.Series([2018, 2019, 2020, 2021, 2022, 2023], index=[0, 1, 2, 3, 4, 5], dtype="int64"),
+        'AVERAGE_VOLUME': pd.Series([220.6, 120, 300, 200, 350.43, 125.0], index=[0, 1, 2, 3, 4, 5], dtype="float64")
+    }, index=[0, 1, 2, 3, 4, 5])
+
+    def test_file_data_is_a_df(self, tmp_path):
         """assert that the file created has a name <CODE>_average_vol_per_year, in csv format,
         with columns STOCK,YEAR,AVERAGE_VOLUME"""
-        pass
+        test_df = TestSaveDataToCsv.test_save_data_df
+        stock = Stock("TEST1")
+        file_path = os.path.join(tmp_path, 'TEST1_average_vol_per_year.csv')
+        stock.save_data_to_csv(test_df, tmp_path)
 
-    def test_file_is_not_existing(self):
-        """assert that function will create a new file if it does not exist yet"""
-        pass
+        # Check that the CSV file was created
+        assert os.path.exists(os.path.join(tmp_path, 'TEST1_average_vol_per_year.csv'))
 
-    def test_given_data_is_not_a_df(self):
-        """assert that function will return None if given data is not a dataframe"""
-        pass
+        # Check that the contents of the CSV file match the input DataFrame
+        df_loaded = pd.read_csv(file_path)
+        pd.testing.assert_frame_equal(test_df, df_loaded)
 
-    def test_file_is_already_existing(self):
+    def test_file_is_already_existing(self, tmp_path):
         """assert that file will be overwritten if it already exists"""
-        pass
+        # create test file
+        existing_file_path = os.path.join(tmp_path, 'TEST2_average_vol_per_year.csv')
+        with open(existing_file_path, 'w') as f:
+            f.write("Testing, Testing2, Testing3")
 
-    def df_to_save_is_none(self):
-        """assert that file will be overwritten if it already exists"""
-        pass
+        test_df = TestSaveDataToCsv.test_save_data_df
+        stock = Stock("TEST2")
+        file_path = os.path.join(tmp_path, 'TEST2_average_vol_per_year.csv')
+        stock.save_data_to_csv(test_df, tmp_path)
+
+        # Check that the contents of the CSV file match the input DataFrame
+        df_loaded = pd.read_csv(file_path)
+        pd.testing.assert_frame_equal(test_df, df_loaded)
+
+    def test_path_parameter_is_none(self):
+        """assert that file will be written in current working dir"""
+        test_df = TestSaveDataToCsv.test_save_data_df
+        stock = Stock("TEST3")
+        stock.save_data_to_csv(test_df)
+
+        assert os.path.exists(os.path.join(os.getcwd(), 'TEST3_average_vol_per_year.csv'))

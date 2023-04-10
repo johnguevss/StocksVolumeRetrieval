@@ -63,7 +63,7 @@ class Stock:
     def compute_avg_volume(self, df, year_count=5):
         """Compute the average volume per year for the past (year_count) years including current year"""
         try:
-            if not (year_count >= 1 and isinstance(year_count, int)):
+            if not (isinstance(year_count, int) and year_count >= 1):
                 raise ValueError("year_count must be an integer greater than 0")
             # compute past 5 years
             year_filter = int(datetime.date.today().year) - (year_count - 1)
@@ -83,8 +83,28 @@ class Stock:
             return vol_by_year_df[['STOCK', 'YEAR', 'AVERAGE_VOLUME']]
 
     # TODO 4:output the df into a csv file with columns STOCK, YEAR, AVERAGE_VOLUME
-    def save_data_to_csv(self, df):
+    # def save_data_to_csv(self, df, path=''):
+    #     """Save the DataFrame to a CSV file."""
+    #     file_name = f"{self.stock_name}_average_vol_per_year.csv"
+    #     with open(file_name, 'w') as f:
+    #         df.to_csv(f"{str(path)}/{self.stock_name}_average_vol_per_year.csv", index=False)
+
+        # try:
+        #     if path.endswith("/") or str(path) == '':
+        #         file_name = f"{self.stock_name}_average_vol_per_year.csv"
+        #         with open(file_name, 'w') as f:
+        #             df.to_csv(f"{str(path)}{self.stock_name}_average_vol_per_year.csv", index=False)
+        #     else:
+        #         raise ValueError(f"provided path is not a valid path, expected value should end in '/' or empty, it got {path} ")
+        # except ValueError as v:
+        #     print(f"error writing to given path: {v}")
+        #     return None
+
+    def save_data_to_csv(self, df, path=None):
         """Save the DataFrame to a CSV file."""
+        if path is None:
+            path = os.getcwd()
         file_name = f"{self.stock_name}_average_vol_per_year.csv"
-        with open(file_name, 'w') as f:
-            df.to_csv(f"{self.stock_name}_average_vol_per_year.csv", index=False)
+        file_path = os.path.join(path, file_name)
+        with open(file_path, 'w') as f:
+            df.to_csv(file_path, index=False)
