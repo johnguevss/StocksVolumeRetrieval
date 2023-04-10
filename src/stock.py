@@ -62,17 +62,25 @@ class Stock:
     # TODO 3: Get the average volume per year for the past 5 years for the selected stock
     def compute_avg_volume(self, df, year_count=5):
         """Compute the average volume per year for the past (year_count) years including current year"""
-        # compute past 5 years
-        year_filter = int(datetime.date.today().year) - (year_count - 1)
+        try:
+            if not (year_count >= 1 and isinstance(year_count, int)):
+                raise ValueError("year_count must be an integer greater than 0")
+            # compute past 5 years
+            year_filter = int(datetime.date.today().year) - (year_count - 1)
 
-        # filter, aggregate and fix schema
-        vol_by_year_df = df.query(f'YEAR >= {year_filter}') \
-            .groupby('YEAR') \
-            .mean(numeric_only=True) \
-            .rename(columns={"volume": "AVERAGE_VOLUME"}) \
-            .assign(STOCK=self.stock_name) \
-            .reset_index()
-        return vol_by_year_df[['STOCK', 'YEAR', 'AVERAGE_VOLUME']]
+            # filter, aggregate and fix schema
+            vol_by_year_df = df.query(f'YEAR >= {year_filter}') \
+                .groupby('YEAR') \
+                .mean(numeric_only=True) \
+                .rename(columns={"volume": "AVERAGE_VOLUME"}) \
+                .assign(STOCK=self.stock_name) \
+                .reset_index()
+        except ValueError as e:
+            print(f"error computing year_filter: {e}")
+            return None
+
+        else:
+            return vol_by_year_df[['STOCK', 'YEAR', 'AVERAGE_VOLUME']]
 
     # TODO 4:output the df into a csv file with columns STOCK, YEAR, AVERAGE_VOLUME
     def save_data_to_csv(self, df):
