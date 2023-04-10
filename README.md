@@ -1,4 +1,4 @@
-# Retrieve Stocks Volume Project
+# Retrieve Stocks Volume
 
 
 Alpha Vantage provides a number of APIs for retrieving stock market and cryptocurrency
