@@ -7,7 +7,7 @@ You can install the dependencies using pip and the requirements.txt file include
 
 `pip install -r requirements.txt`
 
-##Usage
+## Usage
 To use the project, simply run the main script with your chosen stock and num of years as parameters:
 `python main.py TWTR 7`
 
