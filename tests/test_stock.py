@@ -2,7 +2,6 @@ import pandas as pd
 import requests
 import pytest
 from src.stock import Stock
-from unittest.mock import Mock
 from pandas.testing import assert_frame_equal
 import os
 

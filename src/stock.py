@@ -83,23 +83,6 @@ class Stock:
             return vol_by_year_df[['STOCK', 'YEAR', 'AVERAGE_VOLUME']]
 
     # TODO 4:output the df into a csv file with columns STOCK, YEAR, AVERAGE_VOLUME
-    # def save_data_to_csv(self, df, path=''):
-    #     """Save the DataFrame to a CSV file."""
-    #     file_name = f"{self.stock_name}_average_vol_per_year.csv"
-    #     with open(file_name, 'w') as f:
-    #         df.to_csv(f"{str(path)}/{self.stock_name}_average_vol_per_year.csv", index=False)
-
-        # try:
-        #     if path.endswith("/") or str(path) == '':
-        #         file_name = f"{self.stock_name}_average_vol_per_year.csv"
-        #         with open(file_name, 'w') as f:
-        #             df.to_csv(f"{str(path)}{self.stock_name}_average_vol_per_year.csv", index=False)
-        #     else:
-        #         raise ValueError(f"provided path is not a valid path, expected value should end in '/' or empty, it got {path} ")
-        # except ValueError as v:
-        #     print(f"error writing to given path: {v}")
-        #     return None
-
     def save_data_to_csv(self, df, path=None):
         """Save the DataFrame to a CSV file."""
         if path is None:
