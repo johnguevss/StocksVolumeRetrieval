@@ -5,14 +5,20 @@ This project provides a Python script that retrieves stock volume data from Alph
 ## Installation
 You can install the dependencies using pip and the requirements.txt file included in this repository. Simply navigate to the project directory and run the following command:
 
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 ## Usage
 To use the project, simply run the main script with your chosen stock and num of years as parameters:
-`python main.py TWTR 7`
+```
+python main.py TWTR 7
+```
 
 num of years is optional, default number of years is 5
-`python main.py TWTR`
+```
+python main.py TWTR
+```
 
 Alpha Vantage provides a number of APIs for retrieving stock market and cryptocurrency
 information: https://www.alphavantage.co/documentation/.
