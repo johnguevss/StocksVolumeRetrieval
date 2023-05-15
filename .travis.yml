@@ -3,5 +3,9 @@ python:
   - "3.10.4"
 install:
   - pip install -e .
+  - pip install pytest-cov codecov
 script:
-  -pytest tests
+  -pytest tests --cov=src tests
+after success:
+  - codecov
+
