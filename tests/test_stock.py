@@ -8,7 +8,7 @@ import os
 
 class TestGetWeeklyStockData(object):
     def test_given_code_is_not_a_stock(self):
-        """assert that function will return None If given code is not a stock"""
+        """assert that function will return None If given code is not a stock  """
         stock = Stock("AWWW")
         actual = stock.get_weekly_stock_data()
         expected = None
