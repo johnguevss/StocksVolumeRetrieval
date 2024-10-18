@@ -1,2 +1,2 @@
 print('Hello Workers_of_manila')
-print('Closing timess')
+print('Closing timerrss')
